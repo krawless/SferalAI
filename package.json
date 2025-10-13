@@ -1,0 +1,35 @@
+{
+  "name": "reusable-project-template",
+  "version": "1.0.0",
+  "description": "A reusable template with React + Vite, Tailwind CSS 3, shadcn/ui, Bun/Express, and Prisma ORM",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --parallel dev:frontend dev:server",
+    "dev:frontend": "cd frontend && bun run dev",
+    "dev:server": "cd server && bun run dev",
+    "build": "cd frontend && bun run build",
+    "preview": "cd frontend && bun run preview",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "prisma:push": "prisma db push",
+    "lint": "cd frontend && bun run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\""
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "prettier": "^3.6.2",
+    "prisma": "^6.17.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.17.1"
+  },
+  "workspaces": [
+    "frontend",
+    "server"
+  ]
+}
