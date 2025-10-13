@@ -158,7 +158,7 @@ This document summarizes what has been implemented in this reusable project temp
 
 ## 🏗️ Project Structure
 
-```
+```file
 .
 ├── frontend/              # React + Vite application
 │   ├── src/

@@ -39,7 +39,7 @@ A modern, production-ready full-stack template with React, Vite, Tailwind CSS 3,
 
 ## 📁 Project Structure
 
-```
+```file
 .
 ├── frontend/              # React + Vite application
 │   ├── src/
@@ -212,14 +212,14 @@ VITE_API_URL=http://localhost:3001
 - `bun run pm2:logs` - View PM2 logs
 - `bun run pm2:monit` - Open PM2 monitoring dashboard
 
-### Frontend
+### Frontend Sferal App
 
 - `bun run dev` - Start development server
 - `bun run build` - Build for production
 - `bun run preview` - Preview production build
 - `bun run lint` - Run ESLint
 
-### Backend
+### Backend Sferal App
 
 - `bun run dev` - Start development server with watch mode
 - `bun run start` - Start production server
@@ -361,7 +361,7 @@ bun run start
 # Use a process manager like PM2 or systemd
 ```
 
-### Database
+### Database MySQL
 
 - Ensure MySQL 5.7+ is installed and running
 - Run migrations: `bun run prisma:migrate`
