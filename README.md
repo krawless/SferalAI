@@ -123,6 +123,8 @@ A modern, production-ready full-stack template with React, Vite, Tailwind CSS 3,
 
 5. **Start development servers**
 
+   **Option A: Simple (using &)**
+
    ```bash
    # Run both frontend and backend concurrently
    bun run dev
@@ -131,6 +133,24 @@ A modern, production-ready full-stack template with React, Vite, Tailwind CSS 3,
    bun run dev:frontend  # Frontend on http://localhost:5173
    bun run dev:server    # Backend on http://localhost:3001
    ```
+
+   **Option B: Using PM2 (recommended for production-like environments)**
+
+   ```bash
+   # Install PM2 globally (one time)
+   npm install -g pm2
+
+   # Start both servers with PM2
+   bun run pm2:dev
+
+   # View logs
+   bun run pm2:logs
+
+   # Stop all
+   bun run pm2:stop
+   ```
+
+   See [PM2_GUIDE.md](./PM2_GUIDE.md) for detailed PM2 usage.
 
 ## 📝 Environment Variables
 
@@ -159,17 +179,38 @@ VITE_API_URL=http://localhost:3001
 
 ### Root Level
 
+**Development:**
+
 - `bun run dev` - Run both frontend and backend concurrently
 - `bun run dev:frontend` - Run only frontend
 - `bun run dev:server` - Run only backend
+
+**Build & Preview:**
+
 - `bun run build` - Build frontend for production
 - `bun run preview` - Preview production build
+
+**Database (Prisma):**
+
 - `bun run prisma:generate` - Generate Prisma client
 - `bun run prisma:migrate` - Create and run migrations
 - `bun run prisma:studio` - Open Prisma Studio
 - `bun run prisma:push` - Push schema to database
+
+**Code Quality:**
+
 - `bun run lint` - Run ESLint on frontend
 - `bun run format` - Format code with Prettier
+
+**PM2 Process Management:**
+
+- `bun run pm2:dev` - Start both servers with PM2
+- `bun run pm2:prod` - Start backend in production mode with PM2
+- `bun run pm2:stop` - Stop all PM2 processes
+- `bun run pm2:restart` - Restart all PM2 processes
+- `bun run pm2:delete` - Delete all PM2 processes
+- `bun run pm2:logs` - View PM2 logs
+- `bun run pm2:monit` - Open PM2 monitoring dashboard
 
 ### Frontend
 

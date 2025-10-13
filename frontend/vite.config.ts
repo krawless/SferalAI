@@ -10,4 +10,8 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    host: true, // Listen on all addresses including IPv4
+    port: 5173,
+  },
 });

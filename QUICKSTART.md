@@ -47,6 +47,8 @@ bun run prisma:push
 
 ### 4. Start Development (1 minute)
 
+**Option A: Simple Start**
+
 ```bash
 # Start both frontend and backend
 bun run dev
@@ -54,6 +56,22 @@ bun run dev
 # Frontend will be available at: http://localhost:5173
 # Backend will be available at: http://localhost:3001
 ```
+
+**Option B: Using PM2 (recommended for better process management)**
+
+```bash
+# Install PM2 globally (one time)
+npm install -g pm2
+
+# Start with PM2
+bun run pm2:dev
+
+# View status: pm2 list
+# View logs: bun run pm2:logs
+# Stop all: bun run pm2:stop
+```
+
+See [PM2_GUIDE.md](./PM2_GUIDE.md) for complete PM2 documentation.
 
 ## That's It! 🎉
 
