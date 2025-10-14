@@ -1,8 +1,9 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { type Request, type Response, type NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { z, ZodError } from 'zod';
+import { z } from 'zod';
 import prisma from './lib/prisma.ts';
+import crypto from 'crypto';
 
 // Load environment variables
 dotenv.config({ path: '../.env' });
@@ -19,6 +20,41 @@ if (!NODE_ENV) {
   throw new Error('NODE_ENV environment variable is required. Please set it in your .env file.');
 }
 
+// Error logging utility
+interface ErrorLogContext {
+  req?: Request;
+  errorId?: string;
+  additionalContext?: Record<string, any>;
+}
+
+const logError = (error: Error, context: ErrorLogContext = {}) => {
+  const errorId = context.errorId || crypto.randomUUID();
+  const timestamp = new Date().toISOString();
+  
+  // Log to console in structured format
+  console.error('='.repeat(80));
+  console.error(`ERROR [${errorId}] at ${timestamp}`);
+  console.error('Message:', error.message);
+  console.error('Name:', error.name);
+  if (context.req) {
+    console.error('Request:', `${context.req.method} ${context.req.originalUrl || context.req.url}`);
+    console.error('IP:', context.req.ip);
+    console.error('Query:', JSON.stringify(context.req.query, null, 2));
+    console.error('Params:', JSON.stringify(context.req.params, null, 2));
+    console.error('Body:', JSON.stringify(context.req.body, null, 2));
+  }
+  if (context.additionalContext) {
+    console.error('Context:', JSON.stringify(context.additionalContext, null, 2));
+  }
+  console.error('Stack:', error.stack);
+  console.error('='.repeat(80));
+
+  // In production, you would send this to a logging service
+  // e.g., Sentry, LogRocket, CloudWatch, etc.
+  
+  return errorId;
+};
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -33,20 +69,20 @@ const validate = (schema: {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
       if (schema.body) {
-        req.body = schema.body.parse(req.body);
+        req.body = schema.body.parse(req.body) as any;
       }
       if (schema.query) {
-        req.query = schema.query.parse(req.query);
+        req.query = schema.query.parse(req.query) as any;
       }
       if (schema.params) {
-        req.params = schema.params.parse(req.params);
+        req.params = schema.params.parse(req.params) as any;
       }
       next();
     } catch (error) {
-      if (error instanceof ZodError) {
+      if (error instanceof z.ZodError) {
         res.status(400).json({
           error: 'Validation Error',
-          details: error.errors.map(err => ({
+          details: error.issues.map((err: z.ZodIssue) => ({
             field: err.path.join('.'),
             message: err.message,
           })),
@@ -69,12 +105,12 @@ const userIdSchema = z.object({
 });
 
 const paginationSchema = z.object({
-  page: z.string().regex(/^\d+$/).transform(Number).default('1'),
-  limit: z.string().regex(/^\d+$/).transform(Number).default('10'),
+  page: z.string().regex(/^\d+$/).optional().default('1').transform(Number),
+  limit: z.string().regex(/^\d+$/).optional().default('10').transform(Number),
 });
 
 // Health check endpoint
-app.get('/health', async (req: Request, res: Response) => {
+app.get('/health', async (_req: Request, res: Response) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
     res.json({
@@ -93,7 +129,7 @@ app.get('/health', async (req: Request, res: Response) => {
 });
 
 // API routes
-app.get('/api', (req: Request, res: Response) => {
+app.get('/api', (_req: Request, res: Response) => {
   res.json({
     message: 'Welcome to the API',
     version: '1.0.0',
@@ -101,7 +137,7 @@ app.get('/api', (req: Request, res: Response) => {
 });
 
 // Example endpoint - replace with your actual endpoints
-app.get('/api/example', (req: Request, res: Response) => {
+app.get('/api/example', (_req: Request, res: Response) => {
   res.json({
     data: 'This is an example endpoint',
     timestamp: new Date().toISOString(),
@@ -111,7 +147,7 @@ app.get('/api/example', (req: Request, res: Response) => {
 // Example Prisma endpoint - get all users with pagination
 app.get('/api/users', validate({ query: paginationSchema }), async (req: Request, res: Response) => {
   try {
-    const { page, limit } = req.query as { page: number; limit: number };
+    const { page, limit } = req.query as unknown as { page: number; limit: number };
     const skip = (page - 1) * limit;
     
     const [users, total] = await Promise.all([
@@ -132,9 +168,16 @@ app.get('/api/users', validate({ query: paginationSchema }), async (req: Request
       },
     });
   } catch (error) {
-    console.error('Error fetching users:', error);
+    const err = error instanceof Error ? error : new Error(String(error));
+    const errorId = logError(err, { 
+      req,
+      additionalContext: { operation: 'fetch_users', query: req.query }
+    });
+    
     res.status(500).json({
       error: 'Failed to fetch users',
+      errorId,
+      ...(NODE_ENV === 'development' && { message: err.message }),
     });
   }
 });
@@ -156,9 +199,16 @@ app.post('/api/users', validate({ body: createUserSchema }), async (req: Request
       message: 'User created successfully',
     });
   } catch (error) {
-    console.error('Error creating user:', error);
+    const err = error instanceof Error ? error : new Error(String(error));
+    const errorId = logError(err, { 
+      req,
+      additionalContext: { operation: 'create_user', email: req.body.email }
+    });
+    
     res.status(500).json({
       error: 'Failed to create user',
+      errorId,
+      ...(NODE_ENV === 'development' && { message: err.message }),
     });
   }
 });
@@ -166,7 +216,7 @@ app.post('/api/users', validate({ body: createUserSchema }), async (req: Request
 // Example GET endpoint with param validation - get user by ID
 app.get('/api/users/:id', validate({ params: userIdSchema }), async (req: Request, res: Response) => {
   try {
-    const { id } = req.params as { id: number };
+    const { id } = req.params as unknown as { id: number };
     
     const user = await prisma.user.findUnique({
       where: { id },
@@ -183,9 +233,16 @@ app.get('/api/users/:id', validate({ params: userIdSchema }), async (req: Reques
       data: user,
     });
   } catch (error) {
-    console.error('Error fetching user:', error);
+    const err = error instanceof Error ? error : new Error(String(error));
+    const errorId = logError(err, { 
+      req,
+      additionalContext: { operation: 'fetch_user_by_id', userId: req.params.id }
+    });
+    
     res.status(500).json({
       error: 'Failed to fetch user',
+      errorId,
+      ...(NODE_ENV === 'development' && { message: err.message }),
     });
   }
 });
@@ -198,13 +255,28 @@ app.use((req: Request, res: Response) => {
   });
 });
 
-// Error handler
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error('Error:', err);
-  res.status(500).json({
+// Global error handler
+app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
+  // Log error with full context server-side
+  const errorId = logError(err, { req });
+  
+  // Return safe response to client
+  const response: any = {
     error: 'Internal Server Error',
-    message: NODE_ENV === 'development' ? err.message : undefined,
-  });
+    errorId, // Include error ID for support/debugging correlation
+  };
+
+  // In development, include detailed error information
+  if (NODE_ENV === 'development') {
+    response.message = err.message;
+    response.stack = err.stack;
+    response.name = err.name;
+  } else {
+    // In production, provide a generic message but tell user to reference the errorId
+    response.message = 'An unexpected error occurred. Please contact support with the error ID if the problem persists.';
+  }
+
+  res.status(500).json(response);
 });
 
 // Start server
