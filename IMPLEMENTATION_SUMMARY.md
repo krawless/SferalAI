@@ -84,7 +84,7 @@ This document summarizes what has been implemented in this reusable project temp
 - [x] Workspace configuration (frontend, server)
 - [x] `.gitignore` with comprehensive exclusions
 - [x] `env.template` with all required variables
-- [x] ESLint configuration (`.eslintrc.json`)
+- [x] ESLint configuration (`.eslintrc.json` for root/server, `frontend/eslint.config.js` for frontend)
 - [x] Prettier configuration (`.prettierrc`)
 - [x] TypeScript strict mode enabled
 - [x] Path aliases in `tsconfig` files
@@ -189,7 +189,7 @@ This document summarizes what has been implemented in this reusable project temp
 │   ├── settings.json   # Editor settings
 │   └── extensions.json # Recommended extensions
 │
-├── .eslintrc.json      # ESLint configuration
+├── .eslintrc.json      # ESLint configuration (root/server)
 ├── .prettierrc         # Prettier configuration
 ├── .gitignore          # Git ignore patterns
 ├── env.template        # Environment variables template
@@ -197,6 +197,8 @@ This document summarizes what has been implemented in this reusable project temp
 ├── README.md           # Comprehensive documentation
 ├── QUICKSTART.md       # Quick start guide
 └── IMPLEMENTATION_SUMMARY.md # This file
+
+Note: Frontend uses eslint.config.js (flat config format)
 ```
 
 ## 🚀 Ready to Use

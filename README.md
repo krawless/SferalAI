@@ -61,10 +61,12 @@ A modern, production-ready full-stack template with React, Vite, Tailwind CSS 3,
 ├── prisma/              # Database schema and migrations
 │   └── schema.prisma   # Prisma schema definition
 │
-├── .eslintrc.json      # ESLint configuration
+├── .eslintrc.json      # ESLint configuration (root/server)
 ├── .prettierrc         # Prettier configuration
 ├── env.template        # Environment variables template
 └── package.json        # Root package.json with scripts
+
+Note: Frontend uses eslint.config.js (flat config format)
 ```
 
 ## 🛠️ Setup Instructions

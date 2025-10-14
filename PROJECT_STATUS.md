@@ -88,7 +88,8 @@ bun run dev
 - `frontend/tailwind.config.js` - Tailwind CSS 3 configuration
 - `frontend/components.json` - shadcn/ui configuration
 - `prisma/schema.prisma` - Database schema
-- `.eslintrc.json` - ESLint rules
+- `.eslintrc.json` - ESLint rules (root/server)
+- `frontend/eslint.config.js` - ESLint flat config (frontend)
 - `.prettierrc` - Code formatting rules
 
 ### Documentation
