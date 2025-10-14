@@ -24,8 +24,8 @@ pm2 start ecosystem.config.cjs
 
 This starts:
 
-- **Frontend** on <http://localhost:5173> (Vite dev server)
-- **Backend** on <http://localhost:3001> (Bun + Express)
+- **Frontend** on `http://localhost:${VITE_PORT}` (configured in .env)
+- **Backend** on `http://localhost:${PORT}` (configured in .env)
 
 ### View Running Processes
 
@@ -214,11 +214,73 @@ pm2 reset [app-name]    # Reset restart counter
 
 ## Troubleshooting
 
+### Environment Variables Not Loading from .env
+
+**⚠️ This is the most common issue!**
+
+**Symptoms:**
+- Application uses unexpected port numbers
+- Frontend connects to wrong backend URL
+- Changes to `.env` file don't take effect
+- `pm2 restart --update-env` doesn't fix it
+
+**Root Cause:**
+Shell environment variables override `.env` file values. PM2 inherits the shell's environment, and dotenv (by default) doesn't override existing variables.
+
+**Solution:**
+
+1. **Check for shell environment variables:**
+   ```bash
+   bun run check-env
+   ```
+
+2. **If conflicts found, unset them:**
+   ```bash
+   unset VITE_API_URL PORT VITE_PORT NODE_ENV
+   ```
+
+3. **Do a clean restart (important: DELETE, not restart!):**
+   ```bash
+   pm2 delete all
+   pm2 start ecosystem.config.cjs
+   ```
+
+4. **Verify the correct values are loaded:**
+   ```bash
+   pm2 list  # Get process ID
+   pm2 env 0 | grep -E 'VITE|PORT'  # Replace 0 with your process ID
+   ```
+
+**Why this happens:**
+- Shell environment variables (from `export` or `.bashrc`/`.zshrc`) have highest priority
+- PM2 inherits the shell's environment
+- dotenv doesn't override existing variables by default
+- This template now uses `dotenv.config({ override: true })` to help prevent this
+
+**Prevention:**
+- Use `bun run pm2:dev:safe` which checks for conflicts first
+- Never export project-specific env vars in `.bashrc` or `.zshrc`
+- Always use the `.env` file for configuration
+
+**Debugging:**
+```bash
+# Check what dotenv sees
+node -e "require('dotenv').config({debug: true}); console.log(process.env.VITE_API_URL)"
+
+# Check shell variables
+env | grep -E 'VITE|PORT'
+
+# Check what PM2 loaded
+pm2 env [process-id]
+```
+
 ### Processes Won't Start
 
-1. Check if Bun is installed: `bun --version`
-2. Check if ports are available: `lsof -i :5173` and `lsof -i :3001`
-3. View error logs: `pm2 logs`
+1. **Check .env configuration first** - Ensure PORT and VITE_PORT are set (required, no defaults)
+2. **Check for environment conflicts:** `bun run check-env`
+3. Check if Bun is installed: `bun --version`
+4. Check if ports are available: `lsof -i :${VITE_PORT}` and `lsof -i :${PORT}`
+5. View error logs: `pm2 logs`
 
 ### High Memory Usage
 
@@ -232,9 +294,15 @@ pm2 list
 ### Processes Keep Restarting
 
 1. Check logs for errors: `pm2 logs`
-2. Increase `min_uptime` in ecosystem config
-3. Check if `.env` file exists and is configured
-4. Verify database connection
+2. **Check for environment variable conflicts:** `bun run check-env`
+3. **Verify .env file** - Ensure PORT and VITE_PORT are set with actual values (not placeholders)
+4. Check if `.env` file exists and is configured
+5. Increase `min_uptime` in ecosystem config
+6. Verify database connection
+
+### More Troubleshooting
+
+For more detailed troubleshooting information, including database connection issues, port conflicts, and installation problems, see [TROUBLESHOOTING.md](./TROUBLESHOOTING.md).
 
 ## PM2 Plus (Optional)
 

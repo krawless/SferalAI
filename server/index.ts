@@ -7,7 +7,11 @@ import prisma from './lib/prisma.js';
 dotenv.config({ path: '../.env' });
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
+
+if (!PORT) {
+  throw new Error('PORT environment variable is required. Please set it in your .env file.');
+}
 
 // Middleware
 app.use(cors());

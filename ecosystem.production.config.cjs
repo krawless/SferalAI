@@ -1,3 +1,7 @@
+// Load environment variables from .env file
+// Using override option to ensure .env values take precedence
+require('dotenv').config({ override: true });
+
 module.exports = {
   apps: [
     {
@@ -10,7 +14,9 @@ module.exports = {
       exec_mode: 'cluster',
       env_production: {
         NODE_ENV: 'production',
-        PORT: 3001,
+        // Explicitly pass through environment variables from .env
+        PORT: process.env.PORT,
+        DATABASE_URL: process.env.DATABASE_URL,
       },
       watch: false,
       autorestart: true,

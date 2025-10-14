@@ -1,3 +1,7 @@
+// Load environment variables from .env file
+// Using override option to ensure .env values take precedence
+require('dotenv').config({ override: true });
+
 module.exports = {
   apps: [
     {
@@ -8,9 +12,14 @@ module.exports = {
       interpreter: 'none',
       env: {
         NODE_ENV: 'development',
+        // Explicitly pass through environment variables from .env
+        VITE_PORT: process.env.VITE_PORT,
+        VITE_API_URL: process.env.VITE_API_URL,
       },
       env_production: {
         NODE_ENV: 'production',
+        VITE_PORT: process.env.VITE_PORT,
+        VITE_API_URL: process.env.VITE_API_URL,
       },
       watch: false,
       autorestart: true,
@@ -28,11 +37,14 @@ module.exports = {
       interpreter: 'none',
       env: {
         NODE_ENV: 'development',
-        PORT: 3001,
+        // Explicitly pass through environment variables from .env
+        PORT: process.env.PORT,
+        DATABASE_URL: process.env.DATABASE_URL,
       },
       env_production: {
         NODE_ENV: 'production',
-        PORT: 3001,
+        PORT: process.env.PORT,
+        DATABASE_URL: process.env.DATABASE_URL,
       },
       watch: false,
       autorestart: true,

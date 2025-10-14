@@ -130,8 +130,8 @@ A modern, production-ready full-stack template with React, Vite, Tailwind CSS 3,
    bun run dev
 
    # Or run them separately:
-   bun run dev:frontend  # Frontend on http://localhost:5173
-   bun run dev:server    # Backend on http://localhost:3001
+   bun run dev:frontend  # Frontend on http://localhost:${VITE_PORT} (from .env)
+   bun run dev:server    # Backend on http://localhost:${PORT} (from .env)
    ```
 
    **Option B: Using PM2 (recommended for production-like environments)**
@@ -169,11 +169,51 @@ DATABASE_URL="mysql://your_username:your_password@localhost:3306/your_database?c
 
 # Server Configuration
 NODE_ENV=development
-PORT=3001
+# REQUIRED: Replace with your chosen backend port
+PORT=YOUR_BACKEND_PORT
 
 # Frontend Configuration
-VITE_API_URL=http://localhost:3001
+# REQUIRED: Replace with your chosen frontend port
+VITE_PORT=YOUR_FRONTEND_PORT
+# REQUIRED: Must match your backend PORT above
+VITE_API_URL=http://localhost:YOUR_BACKEND_PORT
 ```
+
+**⚠️ Important:** The `PORT` and `VITE_PORT` variables are **required** and have no default fallbacks. You must replace the placeholder values with actual port numbers. If these are not set, the application will throw an error with a clear message.
+
+### Environment Variable Precedence
+
+**Important:** Understanding how environment variables are loaded can prevent configuration issues.
+
+When using PM2, variables are loaded in this order (highest to lowest priority):
+
+1. **Shell environment** (e.g., `export VITE_API_URL=...`) - ⚠️ **Highest priority**
+2. **PM2 ecosystem config** (`env` section in `ecosystem.config.cjs`)
+3. **.env file** (loaded by dotenv) - ⚠️ **Lowest priority**
+
+**Best Practice:** Avoid setting project environment variables in your shell (`.bashrc`, `.zshrc`, etc.). Always use the `.env` file.
+
+**Troubleshooting:** If your app connects to the wrong port after changing `.env`:
+
+```bash
+# 1. Check for conflicting shell variables
+bun run check-env
+
+# 2. If found, unset them
+unset VITE_API_URL PORT VITE_PORT NODE_ENV
+
+# 3. Clean restart (delete, not restart!)
+pm2 delete all && pm2 start ecosystem.config.cjs
+```
+
+**Use safe startup scripts** that automatically check for conflicts:
+
+```bash
+bun run pm2:dev:safe   # Instead of pm2:dev
+bun run pm2:prod:safe  # Instead of pm2:prod
+```
+
+See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for more details on environment variable issues.
 
 ## 🎯 Available Scripts
 
@@ -202,10 +242,16 @@ VITE_API_URL=http://localhost:3001
 - `bun run lint` - Run ESLint on frontend
 - `bun run format` - Format code with Prettier
 
+**Environment Check:**
+
+- `bun run check-env` - Check for conflicting shell environment variables
+
 **PM2 Process Management:**
 
 - `bun run pm2:dev` - Start both servers with PM2
+- `bun run pm2:dev:safe` - Start with environment check (recommended)
 - `bun run pm2:prod` - Start backend in production mode with PM2
+- `bun run pm2:prod:safe` - Start production with environment check (recommended)
 - `bun run pm2:stop` - Stop all PM2 processes
 - `bun run pm2:restart` - Restart all PM2 processes
 - `bun run pm2:delete` - Delete all PM2 processes

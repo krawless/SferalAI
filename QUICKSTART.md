@@ -22,18 +22,23 @@ cd frontend && bun install && cd ..
 cd server && bun install && cd ..
 ```
 
-### 2. Configure Database (1 minute)
+### 2. Configure Environment Variables (2 minutes)
 
 ```bash
 # Copy environment template
 cp env.template .env
 
-# Edit .env with your database credentials
-# At minimum, update these values:
+# Edit .env and REPLACE all placeholder values:
+# REQUIRED:
+# - PORT=YOUR_BACKEND_PORT → Replace with actual port
+# - VITE_PORT=YOUR_FRONTEND_PORT → Replace with actual port
+# - VITE_API_URL=http://localhost:YOUR_BACKEND_PORT → Match your PORT
 # - DB_USER_PROD=your_username
 # - DB_PASSWORD_PROD=your_password
 # - DB_NAME_PROD=your_database_name
 ```
+
+**⚠️ Important:** Port configuration is **required**. The application will not start without valid PORT and VITE_PORT values.
 
 ### 3. Setup Prisma (1 minute)
 
@@ -47,14 +52,28 @@ bun run prisma:push
 
 ### 4. Start Development (1 minute)
 
+**⚠️ Before starting, check for environment conflicts:**
+
+```bash
+# Verify no shell environment variables will conflict with .env
+bun run check-env
+```
+
+If you see warnings about conflicting shell variables, run:
+```bash
+unset VITE_API_URL PORT VITE_PORT NODE_ENV
+```
+
+**Why this matters:** Shell environment variables (from `export` or `.bashrc`/`.zshrc`) override `.env` file values. This check ensures your `.env` configuration will be used correctly.
+
 #### Option A: Simple Start
 
 ```bash
 # Start both frontend and backend
 bun run dev
 
-# Frontend will be available at: http://localhost:5173
-# Backend will be available at: http://localhost:3001
+# Frontend will be available at: http://localhost:${VITE_PORT} (check your .env)
+# Backend will be available at: http://localhost:${PORT} (check your .env)
 ```
 
 #### Option B: Using PM2 (recommended for better process management)
@@ -63,8 +82,11 @@ bun run dev
 # Install PM2 globally (one time)
 npm install -g pm2
 
-# Start with PM2
-bun run pm2:dev
+# Start with PM2 (with automatic environment check)
+bun run pm2:dev:safe
+
+# Or without the check:
+# bun run pm2:dev
 
 # View status: pm2 list
 # View logs: bun run pm2:logs
@@ -92,6 +114,23 @@ You should now see:
 
 ## Troubleshooting
 
+### Environment Variable Issues (Most Common!)
+
+If your app connects to the wrong port or `.env` changes don't take effect:
+
+```bash
+# 1. Check for shell environment conflicts
+bun run check-env
+
+# 2. If found, unset them
+unset VITE_API_URL PORT VITE_PORT NODE_ENV
+
+# 3. Clean restart
+pm2 delete all && pm2 start ecosystem.config.cjs
+```
+
+**Why:** Shell environment variables (from `export` or `.bashrc`) override `.env` file values.
+
 ### Database connection fails
 
 - Ensure MySQL is running
@@ -101,20 +140,45 @@ You should now see:
 ### Frontend won't start
 
 - Clear node_modules: `rm -rf frontend/node_modules && cd frontend && bun install`
-- Check for port conflicts (default: 5173)
+- Check for port conflicts (configured in .env as VITE_PORT)
+- Ensure VITE_PORT is set in your .env file (required, no default)
 
 ### Prisma errors
 
 - Run `bun run prisma:generate` to regenerate the client
 - Check your DATABASE_URL in `.env`
 
+### Port configuration errors
+
+- **Error: "PORT environment variable is required"** - Set PORT in your .env file
+- **Error: "VITE_PORT environment variable is required"** - Set VITE_PORT in your .env file
+- These variables are required and have no defaults - this is intentional to prevent confusion
+
+### Need More Help?
+
+See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for comprehensive troubleshooting guide covering:
+- Detailed environment variable debugging
+- PM2 process management issues
+- Database connection problems
+- Port conflicts
+- And more...
+
 ## Available Commands
 
 ```bash
+# Environment Check
+bun run check-env       # Check for conflicting shell environment variables
+
 # Development
 bun run dev              # Run both frontend and backend
 bun run dev:frontend     # Run only frontend
 bun run dev:server       # Run only backend
+
+# PM2 Process Management
+bun run pm2:dev:safe     # Start with PM2 (with environment check - recommended)
+bun run pm2:dev          # Start with PM2 (without check)
+bun run pm2:stop         # Stop all PM2 processes
+bun run pm2:logs         # View PM2 logs
 
 # Build
 bun run build           # Build frontend for production

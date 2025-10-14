@@ -53,7 +53,8 @@ Note: Bundle size is acceptable for initial load. Consider code-splitting for pr
 # Copy environment template
 cp env.template .env
 
-# Edit .env with your database credentials
+# Edit .env with your configuration
+# REQUIRED: Set PORT and VITE_PORT with actual port numbers
 # Update DB_USER_PROD, DB_PASSWORD_PROD, DB_NAME_PROD
 
 # Generate Prisma client
@@ -69,13 +70,13 @@ bun run prisma:push
 # Start both frontend and backend
 bun run dev
 
-# Frontend: http://localhost:5173
-# Backend: http://localhost:3001
+# Frontend: http://localhost:${VITE_PORT} (from .env)
+# Backend: http://localhost:${PORT} (from .env)
 ```
 
 ### 3. Access the Application
 
-- Open <http://localhost:5173> in your browser
+- Open `http://localhost:${VITE_PORT}` in your browser (check your .env for the actual port)
 - Toggle dark/light mode with the button in the header
 - See example charts, forms, and components
 
@@ -141,8 +142,8 @@ bun run dev
 ```bash
 # Development
 bun run dev              # Run both frontend and backend
-bun run dev:frontend     # Frontend only (port 5173)
-bun run dev:server       # Backend only (port 3001)
+bun run dev:frontend     # Frontend only (VITE_PORT from .env)
+bun run dev:server       # Backend only (PORT from .env)
 
 # Build
 bun run build           # Build frontend for production
