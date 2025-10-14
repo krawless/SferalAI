@@ -150,21 +150,85 @@ const paginationSchema = z.object({
 
 // Health check endpoint
 app.get('/health', async (_req: Request, res: Response) => {
+  const timestamp = new Date().toISOString();
+  const checks: {
+    database: { status: 'ok' | 'error'; message?: string };
+    configuration: { status: 'ok' | 'error'; message?: string; missing?: string[] };
+  } = {
+    database: { status: 'ok' },
+    configuration: { status: 'ok' },
+  };
+
+  // Check database connectivity
   try {
     await prisma.$queryRaw`SELECT 1`;
-    res.json({
-      status: 'ok',
-      database: 'connected',
-      timestamp: new Date().toISOString(),
-      environment: NODE_ENV,
-    });
+    checks.database.status = 'ok';
+    checks.database.message = 'Database connection successful';
   } catch (error) {
-    res.status(503).json({
-      status: 'error',
-      database: 'disconnected',
-      timestamp: new Date().toISOString(),
-    });
+    checks.database.status = 'error';
+    checks.database.message = error instanceof Error ? error.message : 'Database connection failed';
   }
+
+  // Check required environment variables
+  const requiredEnvVars = ['PORT', 'NODE_ENV', 'DATABASE_URL'];
+  const missingVars: string[] = [];
+  const invalidVars: string[] = [];
+
+  for (const varName of requiredEnvVars) {
+    if (!process.env[varName]) {
+      missingVars.push(varName);
+    }
+  }
+
+  // Validate NODE_ENV value
+  if (process.env.NODE_ENV && !['development', 'production', 'test'].includes(process.env.NODE_ENV)) {
+    invalidVars.push(`NODE_ENV (must be development, production, or test)`);
+  }
+
+  // Validate PORT value
+  if (process.env.PORT) {
+    const port = parseInt(process.env.PORT, 10);
+    if (isNaN(port) || port < 1 || port > 65535) {
+      invalidVars.push(`PORT (must be between 1 and 65535)`);
+    }
+  }
+
+  // Validate DATABASE_URL format
+  if (process.env.DATABASE_URL && !process.env.DATABASE_URL.startsWith('mysql://')) {
+    invalidVars.push(`DATABASE_URL (must start with mysql://)`);
+  }
+
+  if (missingVars.length > 0 || invalidVars.length > 0) {
+    checks.configuration.status = 'error';
+    const errorMessages: string[] = [];
+    if (missingVars.length > 0) {
+      errorMessages.push(`Missing: ${missingVars.join(', ')}`);
+    }
+    if (invalidVars.length > 0) {
+      errorMessages.push(`Invalid: ${invalidVars.join(', ')}`);
+    }
+    checks.configuration.message = errorMessages.join('; ');
+    checks.configuration.missing = missingVars;
+  } else {
+    checks.configuration.message = 'All required environment variables are configured';
+  }
+
+  // Determine overall health status
+  const isHealthy = checks.database.status === 'ok' && checks.configuration.status === 'ok';
+  const statusCode = isHealthy ? 200 : 503;
+
+  res.status(statusCode).json({
+    status: isHealthy ? 'ok' : 'error',
+    timestamp,
+    environment: NODE_ENV,
+    checks,
+    uptime: process.uptime(),
+    ...(NODE_ENV === 'development' && {
+      // Include additional debug info in development
+      version: process.version,
+      platform: process.platform,
+    }),
+  });
 });
 
 // API routes

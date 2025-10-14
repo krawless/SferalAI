@@ -294,11 +294,29 @@ return {
 
 ---
 
+## Runtime Monitoring
+
+In addition to startup validation, the application includes a **health check endpoint** that continuously monitors configuration:
+
+```bash
+curl http://localhost:3000/health
+```
+
+The health check verifies:
+- ✅ All required environment variables are set
+- ✅ All variables have valid values
+- ✅ Database connection is working
+
+See [HEALTH_CHECK.md](./HEALTH_CHECK.md) for complete documentation.
+
+---
+
 ## Related Files
 
 - **`env.template`** - Template with all required variables and documentation
 - **`server/index.ts`** - Backend validation implementation
 - **`frontend/vite.config.ts`** - Frontend validation implementation
+- **`HEALTH_CHECK.md`** - Runtime health and configuration monitoring
 - **`.env`** - Your local environment configuration (gitignored)
 
 ---
@@ -309,4 +327,5 @@ See the comments in:
 - `server/index.ts` (lines 11-53) for backend validation
 - `frontend/vite.config.ts` (lines 5-64) for frontend validation
 - `env.template` for variable documentation
+- `HEALTH_CHECK.md` for runtime monitoring
 

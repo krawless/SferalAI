@@ -427,6 +427,51 @@ bun run start
 7. **Formatting**: Always format numbers to 2 decimal places in the UI [[memory:7176977]]
 8. **Code Style**: Run `bun run format` before committing
 
+## 🏥 Health Check & Monitoring
+
+The application includes a comprehensive health check endpoint for monitoring:
+
+```bash
+# Check application health
+curl http://localhost:3000/health
+```
+
+**Features:**
+- ✅ Database connectivity validation
+- ✅ Environment variable validation
+- ✅ Configuration status checking
+- ✅ Uptime reporting
+- ✅ HTTP 200 (healthy) / 503 (unhealthy) status codes
+
+**Example Response:**
+```json
+{
+  "status": "ok",
+  "timestamp": "2025-10-14T12:00:00.000Z",
+  "environment": "development",
+  "checks": {
+    "database": {
+      "status": "ok",
+      "message": "Database connection successful"
+    },
+    "configuration": {
+      "status": "ok",
+      "message": "All required environment variables are configured"
+    }
+  },
+  "uptime": 123.456
+}
+```
+
+Perfect for:
+- 🐳 Docker health checks
+- ☸️ Kubernetes liveness/readiness probes
+- ⚖️ Load balancer health monitoring
+- 📊 Uptime monitoring services
+- 🔄 PM2 process management
+
+See [HEALTH_CHECK.md](./HEALTH_CHECK.md) for complete documentation and integration examples.
+
 ## 🔧 Customization
 
 ### Change Primary Color
@@ -459,6 +504,16 @@ bun run prisma:migrate
 ```
 
 ## 📖 Documentation Links
+
+### Project Documentation
+
+- [ENV_VALIDATION.md](./ENV_VALIDATION.md) - Environment variable validation system
+- [HEALTH_CHECK.md](./HEALTH_CHECK.md) - Health check endpoint and monitoring
+- [PM2_GUIDE.md](./PM2_GUIDE.md) - PM2 process management guide
+- [QUICKSTART.md](./QUICKSTART.md) - Quick start guide
+- [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) - Common issues and solutions
+
+### Technology Documentation
 
 - [React](https://react.dev)
 - [Vite](https://vite.dev)
