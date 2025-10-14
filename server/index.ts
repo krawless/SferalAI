@@ -8,17 +8,56 @@ import crypto from 'crypto';
 // Load environment variables
 dotenv.config({ path: '../.env' });
 
+// Environment variable validation schema
+const envSchema = z.object({
+  PORT: z.string()
+    .min(1, 'PORT is required')
+    .regex(/^\d+$/, 'PORT must be a valid port number')
+    .transform(Number)
+    .refine((port) => port > 0 && port < 65536, 'PORT must be between 1 and 65535'),
+  
+  NODE_ENV: z.enum(['development', 'production', 'test'], {
+    message: 'NODE_ENV must be one of: development, production, test'
+  }),
+  
+  DATABASE_URL: z.string()
+    .min(1, 'DATABASE_URL is required')
+    .regex(/^mysql:\/\/.+/, 'DATABASE_URL must be a valid MySQL connection string (mysql://...)'),
+});
+
+// Validate environment variables at startup
+function validateEnvironment() {
+  try {
+    const validated = envSchema.parse({
+      PORT: process.env.PORT,
+      NODE_ENV: process.env.NODE_ENV,
+      DATABASE_URL: process.env.DATABASE_URL,
+    });
+    
+    console.log('✅ Environment variables validated successfully');
+    return validated;
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error('❌ Environment variable validation failed:');
+      console.error('');
+      error.issues.forEach((issue) => {
+        console.error(`  - ${issue.path.join('.')}: ${issue.message}`);
+      });
+      console.error('');
+      console.error('Please check your .env file and ensure all required variables are set correctly.');
+      console.error('See env.template for reference.');
+      process.exit(1);
+    }
+    throw error;
+  }
+}
+
+// Validate and extract environment variables
+const env = validateEnvironment();
+const PORT = env.PORT;
+const NODE_ENV = env.NODE_ENV;
+
 const app = express();
-const PORT = process.env.PORT;
-const NODE_ENV = process.env.NODE_ENV;
-
-if (!PORT) {
-  throw new Error('PORT environment variable is required. Please set it in your .env file.');
-}
-
-if (!NODE_ENV) {
-  throw new Error('NODE_ENV environment variable is required. Please set it in your .env file.');
-}
 
 // Error logging utility
 interface ErrorLogContext {
