@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { z, ZodError } from 'zod';
-import prisma from './lib/prisma.js';
+import prisma from './lib/prisma.ts';
 
 // Load environment variables
 dotenv.config({ path: '../.env' });
