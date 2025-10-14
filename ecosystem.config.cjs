@@ -5,7 +5,8 @@ require('dotenv').config({ override: true });
 module.exports = {
   apps: [
     {
-      name: 'frontend',
+      name: 'frontend', // WorkshopManager will replace this with unique name
+      namespace: 'PROJECT_NAME_PLACEHOLDER', // WorkshopManager replaces this
       cwd: './frontend',
       script: 'bun',
       args: 'run dev',
@@ -30,7 +31,8 @@ module.exports = {
       log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
     },
     {
-      name: 'backend',
+      name: 'backend', //WorkshopManager will replace this with unique name
+      namespace: 'PROJECT_NAME_PLACEHOLDER', // WorkshopManager replaces this
       cwd: './server',
       script: 'bun',
       args: 'run dev',
