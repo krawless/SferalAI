@@ -1,29 +1,40 @@
 {
   "compilerOptions": {
-    // Environment setup & latest features
-    "lib": ["ESNext"],
+    // Base TypeScript configuration for the monorepo
+    // This file contains shared settings that both frontend and server extend from
+    
+    // Target modern JavaScript
     "target": "ESNext",
-    "module": "Preserve",
+    "lib": ["ESNext"],
+    "module": "ESNext",
     "moduleDetection": "force",
-    "jsx": "react-jsx",
-    "allowJs": true,
-
-    // Bundler mode
+    
+    // Module resolution for modern bundlers
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
-
-    // Best practices
+    
+    // Type checking - strict mode
     "strict": true,
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
-
-    // Some stricter flags (disabled by default)
+    
+    // Allow JavaScript files
+    "allowJs": true,
+    "checkJs": false,
+    
+    // Additional strictness (can be overridden by extending configs)
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false
-  }
+    "noPropertyAccessFromIndexSignature": false,
+    
+    // Source map and declaration settings
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false
+  },
+  "exclude": ["node_modules", "dist", "build", ".next"]
 }
