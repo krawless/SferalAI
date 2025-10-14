@@ -9,9 +9,14 @@ dotenv.config({ path: '../.env' });
 
 const app = express();
 const PORT = process.env.PORT;
+const NODE_ENV = process.env.NODE_ENV;
 
 if (!PORT) {
   throw new Error('PORT environment variable is required. Please set it in your .env file.');
+}
+
+if (!NODE_ENV) {
+  throw new Error('NODE_ENV environment variable is required. Please set it in your .env file.');
 }
 
 // Middleware
@@ -76,7 +81,7 @@ app.get('/health', async (req: Request, res: Response) => {
       status: 'ok',
       database: 'connected',
       timestamp: new Date().toISOString(),
-      environment: process.env.NODE_ENV,
+      environment: NODE_ENV,
     });
   } catch (error) {
     res.status(503).json({
@@ -198,12 +203,12 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error('Error:', err);
   res.status(500).json({
     error: 'Internal Server Error',
-    message: process.env.NODE_ENV === 'development' ? err.message : undefined,
+    message: NODE_ENV === 'development' ? err.message : undefined,
   });
 });
 
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📝 Environment: ${process.env.NODE_ENV}`);
+  console.log(`📝 Environment: ${NODE_ENV}`);
 });
