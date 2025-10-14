@@ -145,6 +145,7 @@ This document summarizes what has been implemented in this reusable project temp
 ### Backend
 
 - Express 5.1.0
+- Zod 4.1.12
 - cors 2.8.5
 - dotenv 17.2.3
 - @types/express 5.0.3

@@ -21,6 +21,7 @@ A modern, production-ready full-stack template with React, Vite, Tailwind CSS 3,
 - **Bun** - Fast JavaScript runtime
 - **Express 5** - Web application framework
 - **TypeScript** - Type safety
+- **Zod** - TypeScript-first schema validation
 - **CORS** - Cross-origin resource sharing
 - **dotenv** - Environment variable management
 
