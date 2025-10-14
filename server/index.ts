@@ -76,7 +76,7 @@ app.get('/health', async (req: Request, res: Response) => {
       status: 'ok',
       database: 'connected',
       timestamp: new Date().toISOString(),
-      environment: process.env.NODE_ENV || 'development',
+      environment: process.env.NODE_ENV,
     });
   } catch (error) {
     res.status(503).json({
@@ -205,5 +205,5 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`📝 Environment: ${process.env.NODE_ENV}`);
 });
