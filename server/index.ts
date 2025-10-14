@@ -60,7 +60,7 @@ const createUserSchema = z.object({
 });
 
 const userIdSchema = z.object({
-  id: z.string().uuid('Invalid user ID format'),
+  id: z.string().regex(/^\d+$/, 'Invalid user ID format').transform(Number),
 });
 
 const paginationSchema = z.object({
@@ -161,7 +161,7 @@ app.post('/api/users', validate({ body: createUserSchema }), async (req: Request
 // Example GET endpoint with param validation - get user by ID
 app.get('/api/users/:id', validate({ params: userIdSchema }), async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params as { id: number };
     
     const user = await prisma.user.findUnique({
       where: { id },
