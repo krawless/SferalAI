@@ -64,7 +64,6 @@ A modern, production-ready full-stack template with React, Vite, Tailwind CSS 3,
 │
 ├── .eslintrc.json      # ESLint configuration (root/server)
 ├── .prettierrc         # Prettier configuration
-├── env.template        # Environment variables template
 └── package.json        # Root package.json with scripts
 
 Note: Frontend uses eslint.config.js (flat config format)
@@ -104,11 +103,13 @@ Note: Frontend uses eslint.config.js (flat config format)
 3. **Configure environment variables**
 
    ```bash
-   # Copy the environment template
-   cp env.template .env
+   # Copy environment templates
+   cp .env.example .env                      # Backend + Database config
+   cp frontend/.env.example frontend/.env    # Frontend config
 
-   # Edit .env with your database credentials
-   nano .env
+   # Edit each .env file with your configuration
+   nano .env                                 # Backend + Database
+   nano frontend/.env                        # Frontend
    ```
 
 4. **Set up the database**
@@ -126,8 +127,6 @@ Note: Frontend uses eslint.config.js (flat config format)
 
 5. **Start development servers**
 
-   **Option A: Simple (using &)**
-
    ```bash
    # Run both frontend and backend concurrently
    bun run dev
@@ -137,86 +136,36 @@ Note: Frontend uses eslint.config.js (flat config format)
    bun run dev:server    # Backend on http://localhost:${PORT} (from .env)
    ```
 
-   **Option B: Using PM2 (recommended for production-like environments)**
-
-   ```bash
-   # Install PM2 globally (one time)
-   npm install -g pm2
-
-   # Start both servers with PM2
-   bun run pm2:dev
-
-   # View logs
-   bun run pm2:logs
-
-   # Stop all
-   bun run pm2:stop
-   ```
-
-   See [PM2_GUIDE.md](./PM2_GUIDE.md) for detailed PM2 usage.
-
 ## 📝 Environment Variables
 
-Create a `.env` file in the root directory based on `env.template`:
+This project uses **TWO** `.env` files:
 
+**Root `.env`** (Backend + Database):
 ```bash
-# Database Configuration (MySQL 5.7)
-DB_HOST_PROD=localhost
-DB_USER_PROD=your_username
-DB_PASSWORD_PROD=your_password
-DB_NAME_PROD=your_database
-DB_PORT_PROD=3306
+# Server Port
+PORT=3001
 
-# Prisma Database URL
-DATABASE_URL="mysql://your_username:your_password@localhost:3306/your_database?charset=utf8mb4&collation=utf8mb4_general_ci"
-
-# Server Configuration
+# Application Environment
 NODE_ENV=development
-# REQUIRED: Replace with your chosen backend port
-PORT=YOUR_BACKEND_PORT
 
-# Frontend Configuration
-# REQUIRED: Replace with your chosen frontend port
-VITE_PORT=YOUR_FRONTEND_PORT
-# REQUIRED: Must match your backend PORT above
-VITE_API_URL=http://localhost:YOUR_BACKEND_PORT
+# Database Connection (used by both Prisma and server)
+DATABASE_URL="mysql://user:password@localhost:3306/dbname?charset=utf8mb4&collation=utf8mb4_general_ci"
 ```
 
-**⚠️ Important:** The `PORT` and `VITE_PORT` variables are **required** and have no default fallbacks. You must replace the placeholder values with actual port numbers. If these are not set, the application will throw an error with a clear message.
-
-### Environment Variable Precedence
-
-**Important:** Understanding how environment variables are loaded can prevent configuration issues.
-
-When using PM2, variables are loaded in this order (highest to lowest priority):
-
-1. **Shell environment** (e.g., `export VITE_API_URL=...`) - ⚠️ **Highest priority**
-2. **PM2 ecosystem config** (`env` section in `ecosystem.config.cjs`)
-3. **.env file** (loaded by dotenv) - ⚠️ **Lowest priority**
-
-**Best Practice:** Avoid setting project environment variables in your shell (`.bashrc`, `.zshrc`, etc.). Always use the `.env` file.
-
-**Troubleshooting:** If your app connects to the wrong port after changing `.env`:
-
+**`frontend/.env`** (Frontend only):
 ```bash
-# 1. Check for conflicting shell variables
-bun run check-env
+# Frontend Development Server Port
+VITE_PORT=5173
 
-# 2. If found, unset them
-unset VITE_API_URL PORT VITE_PORT NODE_ENV
-
-# 3. Clean restart (delete, not restart!)
-pm2 delete all && pm2 start ecosystem.config.cjs
+# Backend API URL (must match PORT in root .env)
+VITE_API_URL=http://localhost:3001
 ```
 
-**Use safe startup scripts** that automatically check for conflicts:
+**⚠️ Important:** All values are **required** and must be configured. The applications will throw clear error messages if required variables are missing.
 
-```bash
-bun run pm2:dev:safe   # Instead of pm2:dev
-bun run pm2:prod:safe  # Instead of pm2:prod
-```
+**Note:** The root `.env` is shared by both Prisma CLI and the server application. After making changes, restart the development servers with `bun run dev`.
 
-See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for more details on environment variable issues.
+See [docs/ENV_SETUP.md](./docs/ENV_SETUP.md) for detailed explanation of the environment file structure.
 
 ## 🎯 Available Scripts
 
@@ -244,22 +193,6 @@ See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for more details on environment v
 
 - `bun run lint` - Run ESLint on frontend
 - `bun run format` - Format code with Prettier
-
-**Environment Check:**
-
-- `bun run check-env` - Check for conflicting shell environment variables
-
-**PM2 Process Management:**
-
-- `bun run pm2:dev` - Start both servers with PM2
-- `bun run pm2:dev:safe` - Start with environment check (recommended)
-- `bun run pm2:prod` - Start backend in production mode with PM2
-- `bun run pm2:prod:safe` - Start production with environment check (recommended)
-- `bun run pm2:stop` - Stop all PM2 processes
-- `bun run pm2:restart` - Restart all PM2 processes
-- `bun run pm2:delete` - Delete all PM2 processes
-- `bun run pm2:logs` - View PM2 logs
-- `bun run pm2:monit` - Open PM2 monitoring dashboard
 
 ### Frontend Sferal App
 
@@ -407,7 +340,7 @@ bun run build
 ```bash
 cd server
 bun run start
-# Use a process manager like PM2 or systemd
+# For production, use a process manager like systemd or Docker
 ```
 
 ### Database MySQL
@@ -433,10 +366,11 @@ The application includes a comprehensive health check endpoint for monitoring:
 
 ```bash
 # Check application health
-curl http://localhost:3000/health
+curl http://localhost:3001/health
 ```
 
 **Features:**
+
 - ✅ Database connectivity validation
 - ✅ Environment variable validation
 - ✅ Configuration status checking
@@ -444,6 +378,7 @@ curl http://localhost:3000/health
 - ✅ HTTP 200 (healthy) / 503 (unhealthy) status codes
 
 **Example Response:**
+
 ```json
 {
   "status": "ok",
@@ -464,13 +399,14 @@ curl http://localhost:3000/health
 ```
 
 Perfect for:
+
 - 🐳 Docker health checks
 - ☸️ Kubernetes liveness/readiness probes
 - ⚖️ Load balancer health monitoring
 - 📊 Uptime monitoring services
-- 🔄 PM2 process management
+- 🔄 Process monitoring
 
-See [HEALTH_CHECK.md](./HEALTH_CHECK.md) for complete documentation and integration examples.
+See [docs/HEALTH_CHECK.md](./docs/HEALTH_CHECK.md) for complete documentation and integration examples.
 
 ## 🔧 Customization
 
@@ -503,15 +439,17 @@ bun run prisma:generate
 bun run prisma:migrate
 ```
 
-## 📖 Documentation Links
+## 📖 Documentation
 
 ### Project Documentation
 
-- [ENV_VALIDATION.md](./ENV_VALIDATION.md) - Environment variable validation system
-- [HEALTH_CHECK.md](./HEALTH_CHECK.md) - Health check endpoint and monitoring
-- [PM2_GUIDE.md](./PM2_GUIDE.md) - PM2 process management guide
-- [QUICKSTART.md](./QUICKSTART.md) - Quick start guide
-- [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) - Common issues and solutions
+- [docs/ENV_SETUP.md](./docs/ENV_SETUP.md) - Environment configuration guide
+- [docs/ENV_VALIDATION.md](./docs/ENV_VALIDATION.md) - Environment variable validation system
+- [docs/HEALTH_CHECK.md](./docs/HEALTH_CHECK.md) - Health check endpoint and monitoring
+- [docs/QUICKSTART.md](./docs/QUICKSTART.md) - Quick start guide (5 minutes)
+- [docs/TROUBLESHOOTING.md](./docs/TROUBLESHOOTING.md) - Common issues and solutions
+- [docs/IMPLEMENTATION_SUMMARY.md](./docs/IMPLEMENTATION_SUMMARY.md) - Detailed feature list
+- [docs/PROJECT_STATUS.md](./docs/PROJECT_STATUS.md) - Current status and verification
 
 ### Technology Documentation
 

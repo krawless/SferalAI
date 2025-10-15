@@ -15,20 +15,7 @@
     "prisma:studio": "prisma studio",
     "prisma:push": "prisma db push",
     "lint": "cd frontend && bun run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
-    "check-env": "node -e \"const fs = require('fs'); const path = require('path'); const envVars = ['VITE_API_URL', 'PORT', 'VITE_PORT', 'NODE_ENV']; const envFileExists = fs.existsSync(path.join(__dirname, '.env')); const conflicting = envVars.filter(key => process.env[key] && envFileExists); if (conflicting.length) { console.error('⚠️  Warning: These environment variables are set in your shell:'); console.error('   ' + conflicting.join(', ')); console.error(''); console.error('This may override your .env file values!'); console.error(''); console.error('To fix, run: unset ' + conflicting.join(' ')); console.error(''); process.exit(1); } else { console.log('✅ No conflicting shell environment variables detected'); console.log('   Safe to start PM2 processes'); }\"",
-    "pm2:dev": "pm2 start ecosystem.config.cjs",
-    "pm2:dev:safe": "bun run check-env && pm2 start ecosystem.config.cjs",
-    "pm2:prod": "pm2 start ecosystem.production.config.cjs --env production",
-    "pm2:prod:safe": "bun run check-env && pm2 start ecosystem.production.config.cjs --env production",
-    "pm2:stop": "pm2 stop ecosystem.config.cjs",
-    "pm2:restart": "pm2 restart ecosystem.config.cjs",
-    "pm2:delete": "pm2 delete ecosystem.config.cjs",
-    "pm2:prod:stop": "pm2 stop ecosystem.production.config.cjs",
-    "pm2:prod:restart": "pm2 restart ecosystem.production.config.cjs",
-    "pm2:prod:delete": "pm2 delete ecosystem.production.config.cjs",
-    "pm2:logs": "pm2 logs",
-    "pm2:monit": "pm2 monit"
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\""
   },
   "devDependencies": {
     "@types/bun": "latest",
