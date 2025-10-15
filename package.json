@@ -1,5 +1,5 @@
 {
-  "name": "reusable-project-template",
+  "name": "sferal-ai-template",
   "version": "1.0.0",
   "description": "A reusable template with React + Vite, Tailwind CSS 3, shadcn/ui, Bun/Express, and Prisma ORM",
   "private": true,
@@ -14,6 +14,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "prisma:push": "prisma db push",
+    "prisma:seed": "bun run prisma/seed.ts",
     "lint": "cd frontend && bun run lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\""
   },

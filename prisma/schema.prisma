@@ -10,14 +10,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Example User model - extend this based on your needs
-model User {
+// Connection model - stores database connection details
+model Connection {
   id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
+  name      String
+  host      String
+  port      Int
+  database  String
+  status    String   @default("active")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("users")
+  @@map("connections")
 }
 

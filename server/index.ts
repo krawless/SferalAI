@@ -247,22 +247,56 @@ app.get('/api/example', (_req: Request, res: Response) => {
   });
 });
 
-// Example Prisma endpoint - get all users with pagination
-app.get('/api/users', validate({ query: paginationSchema }), async (req: Request, res: Response) => {
+// Get database connection details
+app.get('/api/connection', async (_req: Request, res: Response) => {
+  try {
+    const connection = await prisma.connection.findFirst({
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+    
+    if (!connection) {
+      res.status(404).json({
+        error: 'No connection found',
+      });
+      return;
+    }
+    
+    res.json({
+      data: connection,
+    });
+  } catch (error) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    const errorId = logError(err, { 
+      req: _req,
+      additionalContext: { operation: 'fetch_connection' }
+    });
+    
+    res.status(500).json({
+      error: 'Failed to fetch connection',
+      errorId,
+      ...(NODE_ENV === 'development' && { message: err.message }),
+    });
+  }
+});
+
+// Example Prisma endpoint - get all connections with pagination
+app.get('/api/connections', validate({ query: paginationSchema }), async (req: Request, res: Response) => {
   try {
     const { page, limit } = req.query as unknown as { page: number; limit: number };
     const skip = (page - 1) * limit;
     
-    const [users, total] = await Promise.all([
-      prisma.user.findMany({
+    const [connections, total] = await Promise.all([
+      prisma.connection.findMany({
         skip,
         take: limit,
       }),
-      prisma.user.count(),
+      prisma.connection.count(),
     ]);
     
     res.json({
-      data: users,
+      data: connections,
       pagination: {
         page,
         limit,
@@ -274,66 +308,35 @@ app.get('/api/users', validate({ query: paginationSchema }), async (req: Request
     const err = error instanceof Error ? error : new Error(String(error));
     const errorId = logError(err, { 
       req,
-      additionalContext: { operation: 'fetch_users', query: req.query }
+      additionalContext: { operation: 'fetch_connections', query: req.query }
     });
     
     res.status(500).json({
-      error: 'Failed to fetch users',
+      error: 'Failed to fetch connections',
       errorId,
       ...(NODE_ENV === 'development' && { message: err.message }),
     });
   }
 });
 
-// Example POST endpoint with validation - create user
-app.post('/api/users', validate({ body: createUserSchema }), async (req: Request, res: Response) => {
-  try {
-    const { email, name } = req.body;
-    
-    const user = await prisma.user.create({
-      data: {
-        email,
-        name,
-      },
-    });
-    
-    res.status(201).json({
-      data: user,
-      message: 'User created successfully',
-    });
-  } catch (error) {
-    const err = error instanceof Error ? error : new Error(String(error));
-    const errorId = logError(err, { 
-      req,
-      additionalContext: { operation: 'create_user', email: req.body.email }
-    });
-    
-    res.status(500).json({
-      error: 'Failed to create user',
-      errorId,
-      ...(NODE_ENV === 'development' && { message: err.message }),
-    });
-  }
-});
-
-// Example GET endpoint with param validation - get user by ID
-app.get('/api/users/:id', validate({ params: userIdSchema }), async (req: Request, res: Response) => {
+// Example GET endpoint with param validation - get connection by ID
+app.get('/api/connections/:id', validate({ params: userIdSchema }), async (req: Request, res: Response) => {
   try {
     const { id } = req.params as unknown as { id: number };
     
-    const user = await prisma.user.findUnique({
+    const connection = await prisma.connection.findUnique({
       where: { id },
     });
     
-    if (!user) {
+    if (!connection) {
       res.status(404).json({
-        error: 'User not found',
+        error: 'Connection not found',
       });
       return;
     }
     
     res.json({
-      data: user,
+      data: connection,
     });
   } catch (error) {
     const err = error instanceof Error ? error : new Error(String(error));
