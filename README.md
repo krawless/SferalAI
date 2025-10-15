@@ -141,6 +141,7 @@ Note: Frontend uses eslint.config.js (flat config format)
 This project uses **TWO** `.env` files:
 
 **Root `.env`** (Backend + Database):
+
 ```bash
 # Server Port
 # Replace YOUR_BACKEND_PORT with your desired port
@@ -154,6 +155,7 @@ DATABASE_URL="mysql://user:password@localhost:3306/dbname?charset=utf8mb4&collat
 ```
 
 **`frontend/.env`** (Frontend only):
+
 ```bash
 # Frontend Development Server Port
 # Replace YOUR_FRONTEND_PORT with your desired port
