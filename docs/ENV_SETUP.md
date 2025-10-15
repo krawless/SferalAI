@@ -49,7 +49,8 @@ Edit `.env` at the root:
 # ==============================================
 
 # Server Port - The port your backend server will run on
-PORT=3001
+# Replace YOUR_BACKEND_PORT with your desired port
+PORT=YOUR_BACKEND_PORT
 
 # Application Environment
 # Options: development, production, test
@@ -74,10 +75,12 @@ Edit `frontend/.env`:
 
 ```bash
 # Frontend Development Server Port
-VITE_PORT=5173
+# Replace YOUR_FRONTEND_PORT with your desired port
+VITE_PORT=YOUR_FRONTEND_PORT
 
-# Backend API URL (must match the PORT in root .env)
-VITE_API_URL=http://localhost:3001
+# Backend API URL
+# Replace YOUR_BACKEND_PORT with the PORT value from root .env
+VITE_API_URL=http://localhost:YOUR_BACKEND_PORT
 ```
 
 ## How Prisma Finds DATABASE_URL
@@ -137,7 +140,7 @@ If validation fails, the dev server won't start and displays error messages.
 
 | Variable | Example | Description |
 |----------|---------|-------------|
-| `PORT` | `3001` | Backend server port |
+| `PORT` | `YOUR_BACKEND_PORT` | Backend server port |
 | `NODE_ENV` | `development` | Application environment |
 | `DATABASE_URL` | `mysql://user:pass@host:3306/db` | MySQL connection string |
 
@@ -145,8 +148,8 @@ If validation fails, the dev server won't start and displays error messages.
 
 | Variable | Example | Description |
 |----------|---------|-------------|
-| `VITE_PORT` | `5173` | Frontend dev server port |
-| `VITE_API_URL` | `http://localhost:3001` | Backend API URL |
+| `VITE_PORT` | `YOUR_FRONTEND_PORT` | Frontend dev server port |
+| `VITE_API_URL` | `http://localhost:YOUR_BACKEND_PORT` | Backend API URL |
 
 ## Common Issues
 
@@ -177,10 +180,10 @@ bun run dev
 
 ```bash
 # Root .env
-PORT=3001
+PORT=YOUR_BACKEND_PORT
 
 # frontend/.env
-VITE_API_URL=http://localhost:3001  ← Must match PORT
+VITE_API_URL=http://localhost:YOUR_BACKEND_PORT  ← Must match PORT value
 ```
 
 ## Best Practices

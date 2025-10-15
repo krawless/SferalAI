@@ -31,10 +31,10 @@ Environment variables in `.env` files are not properly configured or the applica
 
    ```bash
    # Root .env
-   PORT=3001
+   PORT=YOUR_BACKEND_PORT
    
    # frontend/.env
-   VITE_API_URL=http://localhost:3001  ← Must match PORT above
+   VITE_API_URL=http://localhost:YOUR_BACKEND_PORT  ← Must match PORT value
    ```
 
 3. **Restart the development servers:**
@@ -197,11 +197,11 @@ Environment variables in `.env` files are not properly configured or the applica
 1. **Find what's using the port:**
 
    ```bash
-   # Check frontend port
-   lsof -i :5173  # (or your VITE_PORT)
+   # Check frontend port (replace with your VITE_PORT)
+   lsof -i :YOUR_FRONTEND_PORT
    
-   # Check backend port
-   lsof -i :3001  # (or your PORT)
+   # Check backend port (replace with your PORT)
+   lsof -i :YOUR_BACKEND_PORT
    ```
 
 2. **Kill the process:**

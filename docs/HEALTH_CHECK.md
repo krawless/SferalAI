@@ -129,18 +129,18 @@ The health check validates the following environment variables:
 ### cURL
 
 ```bash
-# Check health
-curl http://localhost:3001/health
+# Check health (replace {PORT} with your PORT value)
+curl http://localhost:{PORT}/health
 
 # Check health with status code
-curl -w "\nHTTP Status: %{http_code}\n" http://localhost:3000/health
+curl -w "\nHTTP Status: %{http_code}\n" http://localhost:{PORT}/health
 ```
 
 ### Docker Healthcheck
 
 ```dockerfile
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3001/health || exit 1
+  CMD curl -f http://localhost:${PORT}/health || exit 1
 ```
 
 ### Kubernetes Liveness Probe
@@ -149,7 +149,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
 livenessProbe:
   httpGet:
     path: /health
-    port: 3001
+    port: YOUR_BACKEND_PORT  # Replace with your PORT value
   initialDelaySeconds: 10
   periodSeconds: 30
   timeoutSeconds: 5
@@ -162,7 +162,7 @@ livenessProbe:
 readinessProbe:
   httpGet:
     path: /health
-    port: 3001
+    port: YOUR_BACKEND_PORT  # Replace with your PORT value
   initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 3
@@ -174,7 +174,7 @@ readinessProbe:
 ```hcl
 resource "aws_lb_target_group" "app" {
   name     = "app-target-group"
-  port     = 3001
+  port     = YOUR_BACKEND_PORT  # Replace with your PORT value
   protocol = "HTTP"
   vpc_id   = aws_vpc.main.id
 
@@ -195,9 +195,12 @@ resource "aws_lb_target_group" "app" {
 ```javascript
 const fetch = require('node-fetch');
 
+// Replace YOUR_BACKEND_PORT with your PORT value
+const PORT = process.env.PORT || 'YOUR_BACKEND_PORT';
+
 async function checkHealth() {
   try {
-    const response = await fetch('http://localhost:3001/health');
+    const response = await fetch(`http://localhost:${PORT}/health`);
     const data = await response.json();
     
     if (data.status === 'ok') {
@@ -222,7 +225,8 @@ setInterval(checkHealth, 30000);
 ```bash
 #!/bin/bash
 
-ENDPOINT="http://localhost:3001/health"
+# Replace YOUR_BACKEND_PORT with your PORT value
+ENDPOINT="http://localhost:YOUR_BACKEND_PORT/health"
 MAX_RETRIES=3
 RETRY_DELAY=5
 
@@ -327,7 +331,7 @@ Log health check failures including:
 
 ### Health Check Timeout
 
-- Check server is running: `curl http://localhost:3001/api`
+- Check server is running: `curl http://localhost:{PORT}/api`
 - Increase timeout in monitoring system
 - Check server logs for blocking operations
 - Verify database isn't overloaded
@@ -368,8 +372,8 @@ Additional debug information included:
 ## Related Documentation
 
 - [ENV_VALIDATION.md](./ENV_VALIDATION.md) - Environment variable validation details
-- [frontend/.env.example](./frontend/.env.example) and [root .env.example](./root .env.example) - Environment templates
-- [server/index.ts](./server/index.ts) - Health check implementation
+- [../frontend/.env.example](../frontend/.env.example) and [../.env.example](../.env.example) - Environment templates
+- [../server/index.ts](../server/index.ts) - Health check implementation
 
 ## Changes from Previous Version
 

@@ -83,7 +83,7 @@ This document summarizes what has been implemented in this reusable project temp
 - [x] Root `package.json` with monorepo scripts
 - [x] Workspace configuration (frontend, server)
 - [x] `.gitignore` with comprehensive exclusions
-- [x] `frontend/.env.example` and `root .env.example` with all required variables
+- [x] `.env.example` (at root) and `frontend/.env.example` with all required variables
 - [x] ESLint configuration (`.eslintrc.json` for root/server, `frontend/eslint.config.js` for frontend)
 - [x] Prettier configuration (`.prettierrc`)
 - [x] TypeScript strict mode enabled

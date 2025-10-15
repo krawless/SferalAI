@@ -109,7 +109,7 @@ cp frontend/.env.example frontend/.env
 **Root `.env` (Backend + Database):**
 
 ```bash
-PORT=3001
+PORT=YOUR_BACKEND_PORT  # Replace with your desired port
 NODE_ENV=development
 DATABASE_URL="mysql://user:password@localhost:3306/dbname?charset=utf8mb4&collation=utf8mb4_general_ci"
 ```
@@ -117,8 +117,8 @@ DATABASE_URL="mysql://user:password@localhost:3306/dbname?charset=utf8mb4&collat
 **Frontend `.env`:**
 
 ```bash
-VITE_PORT=5173
-VITE_API_URL=http://localhost:3001  # Must match PORT above
+VITE_PORT=YOUR_FRONTEND_PORT  # Replace with your desired port
+VITE_API_URL=http://localhost:YOUR_BACKEND_PORT  # Must match PORT above
 ```
 
 ### 3. Start the Application
@@ -148,7 +148,7 @@ bun run dev
 - PORT: PORT must be between 1 and 65535
 ```
 
-**Solution:** Use a valid port number (e.g., 3000, 3001, 8080).
+**Solution:** Use a valid port number between 1 and 65535.
 
 ### ❌ Invalid URL Format
 
@@ -195,7 +195,7 @@ mysql://username:password@host:port/database?charset=utf8mb4&collation=utf8mb4_g
 In addition to startup validation, the application includes a **health check endpoint** that continuously monitors configuration:
 
 ```bash
-curl http://localhost:3001/health
+curl http://localhost:{PORT}/health
 ```
 
 The health check verifies:

@@ -143,7 +143,8 @@ This project uses **TWO** `.env` files:
 **Root `.env`** (Backend + Database):
 ```bash
 # Server Port
-PORT=3001
+# Replace YOUR_BACKEND_PORT with your desired port
+PORT=YOUR_BACKEND_PORT
 
 # Application Environment
 NODE_ENV=development
@@ -155,13 +156,15 @@ DATABASE_URL="mysql://user:password@localhost:3306/dbname?charset=utf8mb4&collat
 **`frontend/.env`** (Frontend only):
 ```bash
 # Frontend Development Server Port
-VITE_PORT=5173
+# Replace YOUR_FRONTEND_PORT with your desired port
+VITE_PORT=YOUR_FRONTEND_PORT
 
 # Backend API URL (must match PORT in root .env)
-VITE_API_URL=http://localhost:3001
+# Replace YOUR_BACKEND_PORT with the PORT value from root .env
+VITE_API_URL=http://localhost:YOUR_BACKEND_PORT
 ```
 
-**⚠️ Important:** All values are **required** and must be configured. The applications will throw clear error messages if required variables are missing.
+**⚠️ Important:** Replace ALL placeholder values (YOUR_*, user, password, dbname, etc.). All values are **required** and must be configured. The applications will throw clear error messages if required variables are missing.
 
 **Note:** The root `.env` is shared by both Prisma CLI and the server application. After making changes, restart the development servers with `bun run dev`.
 
@@ -365,8 +368,8 @@ bun run start
 The application includes a comprehensive health check endpoint for monitoring:
 
 ```bash
-# Check application health
-curl http://localhost:3001/health
+# Check application health (replace {PORT} with your PORT value)
+curl http://localhost:{PORT}/health
 ```
 
 **Features:**

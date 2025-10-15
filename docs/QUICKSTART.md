@@ -33,7 +33,7 @@ cp frontend/.env.example frontend/.env
 **Edit `.env` (root) - Backend + Database:**
 
 ```bash
-PORT=3001
+PORT=YOUR_BACKEND_PORT  # Replace with your desired port
 NODE_ENV=development
 DATABASE_URL="mysql://user:password@localhost:3306/dbname?charset=utf8mb4&collation=utf8mb4_general_ci"
 ```
@@ -41,11 +41,11 @@ DATABASE_URL="mysql://user:password@localhost:3306/dbname?charset=utf8mb4&collat
 **Edit `frontend/.env` - Frontend:**
 
 ```bash
-VITE_PORT=5173
-VITE_API_URL=http://localhost:3001  # Must match PORT above
+VITE_PORT=YOUR_FRONTEND_PORT  # Replace with your desired port
+VITE_API_URL=http://localhost:YOUR_BACKEND_PORT  # Must match PORT above
 ```
 
-⚠️ **Important:** All values are **required**. The applications will not start without valid configuration.
+⚠️ **Important:** Replace ALL placeholder values (YOUR_*). The applications will not start without valid configuration.
 
 ### 3. Setup Prisma (1 minute)
 
@@ -63,8 +63,8 @@ bun run prisma:push
 # Start both frontend and backend
 bun run dev
 
-# Frontend will be available at: http://localhost:5173 (or your VITE_PORT)
-# Backend will be available at: http://localhost:3001 (or your PORT)
+# Frontend will be available at: http://localhost:{VITE_PORT}
+# Backend will be available at: http://localhost:{PORT}
 ```
 
 **Note:** The servers will run concurrently. To stop them, press `Ctrl+C` in your terminal.

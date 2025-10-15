@@ -55,8 +55,7 @@ cp .env.example .env
 cp frontend/.env.example frontend/.env
 
 # Edit both .env files with your configuration
-# REQUIRED: Replace all placeholder values (YOUR_*)
-# Update DB_USER_PROD, DB_PASSWORD_PROD, DB_NAME_PROD
+# REQUIRED: Replace all placeholder values (YOUR_*, user, password, dbname, etc.)
 
 # Generate Prisma client
 bun run prisma:generate
