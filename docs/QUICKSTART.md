@@ -26,8 +26,8 @@ cd server && bun install && cd ..
 
 ```bash
 # Copy environment templates
-cp .env.example .env
-cp frontend/.env.example frontend/.env
+cp env.example .env
+cp frontend/env.example frontend/.env
 ```
 
 **Edit `.env` (root) - Backend + Database:**

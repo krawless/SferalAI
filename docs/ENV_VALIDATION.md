@@ -8,7 +8,7 @@ Both the **frontend** and **backend** validate all required environment variable
 
 1. **Fail to start**
 2. **Display clear error messages** explaining what's wrong
-3. **Reference the `.env.example` files** for guidance
+3. **Reference the `env.example` files** for guidance
 
 This prevents runtime failures and ensures proper configuration before the application runs.
 
@@ -38,7 +38,7 @@ If validation fails, you'll see:
   - DATABASE_URL: DATABASE_URL is required
 
 Please check your .env file and ensure all required variables are set correctly.
-See .env.example for reference.
+See env.example for reference.
 ```
 
 ### How It Works
@@ -87,7 +87,7 @@ If validation fails, you'll see:
   - VITE_API_URL: VITE_API_URL must use http:// or https:// protocol
 
 Please check your .env file and ensure all required variables are set correctly.
-See frontend/.env.example for reference.
+See frontend/env.example for reference.
 ```
 
 ---
@@ -98,10 +98,10 @@ See frontend/.env.example for reference.
 
 ```bash
 # Backend + Database (root)
-cp .env.example .env
+cp env.example .env
 
 # Frontend
-cp frontend/.env.example frontend/.env
+cp frontend/env.example frontend/.env
 ```
 
 ### 2. Update Required Values
@@ -185,7 +185,7 @@ mysql://username:password@host:port/database?charset=utf8mb4&collation=utf8mb4_g
 ✅ **Clear Error Messages** - Tells you exactly what's wrong and where  
 ✅ **Prevents Silent Failures** - Won't start with invalid configuration  
 ✅ **Type Safety** - Validated values have correct types (number, string, enum)  
-✅ **Documentation** - `.env.example` files serve as living documentation  
+✅ **Documentation** - `env.example` files serve as living documentation  
 ✅ **Developer Experience** - Fast feedback loop for configuration issues  
 
 ---
@@ -210,8 +210,8 @@ See [HEALTH_CHECK.md](./HEALTH_CHECK.md) for complete documentation.
 
 ## Related Files
 
-- **`.env.example`** - Backend/database environment template
-- **`frontend/.env.example`** - Frontend environment template
+- **`env.example`** - Backend/database environment template
+- **`frontend/env.example`** - Frontend environment template
 - **`server/index.ts`** - Backend validation implementation
 - **`frontend/vite.config.ts`** - Frontend validation implementation
 - **[HEALTH_CHECK.md](./HEALTH_CHECK.md)** - Runtime health and configuration monitoring

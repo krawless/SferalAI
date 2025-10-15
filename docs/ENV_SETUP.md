@@ -33,10 +33,10 @@ This project uses a **single root `.env` file** for backend and database configu
 
 ```bash
 # Backend + Database configuration
-cp .env.example .env
+cp env.example .env
 
 # Frontend configuration
-cp frontend/.env.example frontend/.env
+cp frontend/env.example frontend/.env
 ```
 
 ### 2. Configure Backend + Database (`.env`)
@@ -189,10 +189,10 @@ VITE_API_URL=http://localhost:YOUR_BACKEND_PORT  ← Must match PORT value
 ## Best Practices
 
 1. ✅ **Never commit `.env` files** - They're in `.gitignore`
-2. ✅ **Use `.env.example` as template** - Copy and customize
+2. ✅ **Use `env.example` as template** - Copy and customize
 3. ✅ **Keep secrets in `.env`** - Database passwords, API keys
 4. ✅ **Restart after changes** - Environment variables load at startup
-5. ✅ **Document new variables** - Add to `.env.example` with comments
+5. ✅ **Document new variables** - Add to `env.example` with comments
 
 ## Related Documentation
 

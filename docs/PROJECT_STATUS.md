@@ -51,8 +51,8 @@ Note: Bundle size is acceptable for initial load. Consider code-splitting for pr
 
 ```bash
 # Copy environment templates
-cp .env.example .env
-cp frontend/.env.example frontend/.env
+cp env.example .env
+cp frontend/env.example frontend/.env
 
 # Edit both .env files with your configuration
 # REQUIRED: Replace all placeholder values (YOUR_*, user, password, dbname, etc.)

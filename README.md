@@ -104,8 +104,8 @@ Note: Frontend uses eslint.config.js (flat config format)
 
    ```bash
    # Copy environment templates
-   cp .env.example .env                      # Backend + Database config
-   cp frontend/.env.example frontend/.env    # Frontend config
+   cp env.example .env                      # Backend + Database config
+   cp frontend/env.example frontend/.env    # Frontend config
 
    # Edit each .env file with your configuration
    nano .env                                 # Backend + Database

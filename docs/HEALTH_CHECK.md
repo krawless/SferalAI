@@ -372,7 +372,7 @@ Additional debug information included:
 ## Related Documentation
 
 - [ENV_VALIDATION.md](./ENV_VALIDATION.md) - Environment variable validation details
-- [../frontend/.env.example](../frontend/.env.example) and [../.env.example](../.env.example) - Environment templates
+- [../frontend/env.example](../frontend/env.example) and [../env.example](../env.example) - Environment templates
 - [../server/index.ts](../server/index.ts) - Health check implementation
 
 ## Changes from Previous Version

@@ -352,8 +352,8 @@ If you need additional help:
    ```
 
 3. Check for common mistakes:
-   - ✅ Did you copy `.env.example` to `.env` at root?
-   - ✅ Did you copy `frontend/.env.example` to `frontend/.env`?
+   - ✅ Did you copy `env.example` to `.env` at root?
+   - ✅ Did you copy `frontend/env.example` to `frontend/.env`?
    - ✅ Did you replace ALL placeholder values in both files?
    - ✅ Is MySQL running?
    - ✅ Did you run `bun run prisma:generate`?
