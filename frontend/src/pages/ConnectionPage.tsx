@@ -27,7 +27,7 @@ export function ConnectionPage() {
       setLoading(true);
       setError(null);
       
-      const response = await fetch('http://localhost:3000/api/connection');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/connection`);
       
       if (!response.ok) {
         throw new Error(`Failed to fetch connection: ${response.statusText}`);
