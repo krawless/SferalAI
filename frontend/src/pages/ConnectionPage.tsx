@@ -27,7 +27,13 @@ export function ConnectionPage() {
       setLoading(true);
       setError(null);
       
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/connection`);
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const fullUrl = `${apiUrl}/api/connection`;
+      console.log('🔍 Debug - VITE_API_URL:', apiUrl);
+      console.log('🔍 Debug - Full URL:', fullUrl);
+      console.log('🔍 Debug - All env vars:', import.meta.env);
+      
+      const response = await fetch(fullUrl);
       
       if (!response.ok) {
         throw new Error(`Failed to fetch connection: ${response.statusText}`);

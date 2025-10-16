@@ -64,7 +64,8 @@ function validateEnvironment(env: Record<string, string>): { VITE_PORT: number; 
 export default defineConfig(({ mode }) => {
   // Load env file based on `mode` in the current working directory.
   // Set the third parameter to '' to load all env regardless of the `VITE_` prefix.
-  const env = loadEnv(mode, process.cwd(), '');
+  // Use __dirname to ensure we load from the frontend directory, not the parent
+  const env = loadEnv(mode, path.resolve(__dirname), '');
   
   // Validate and extract environment variables
   const validatedEnv = validateEnvironment(env);
