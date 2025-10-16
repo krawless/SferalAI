@@ -448,6 +448,7 @@ bun run prisma:migrate
 
 ### Project Documentation
 
+- [docs/HOW_TO_USE_TEMPLATE.md](./docs/HOW_TO_USE_TEMPLATE.md) - AI assistant guide for using this template
 - [docs/ENV_SETUP.md](./docs/ENV_SETUP.md) - Environment configuration guide
 - [docs/ENV_VALIDATION.md](./docs/ENV_VALIDATION.md) - Environment variable validation system
 - [docs/HEALTH_CHECK.md](./docs/HEALTH_CHECK.md) - Health check endpoint and monitoring
