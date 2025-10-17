@@ -7,6 +7,7 @@ A modern, production-ready full-stack template with React, Vite, Tailwind CSS 3,
 ### Frontend
 
 - **React 19** - UI library
+- **React Router 7** - Client-side routing
 - **Vite 7** - Fast build tool and dev server
 - **TypeScript** - Type safety
 - **Tailwind CSS 3** - Utility-first CSS framework
@@ -301,17 +302,20 @@ function MyComponent() {
 
 ## 🗄️ Database Schema
 
-The template includes a minimal User model. Extend it based on your needs:
+The template includes a Connection model for reference. Extend it based on your needs:
 
 ```prisma
-model User {
+model Connection {
   id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
+  name      String
+  host      String
+  port      Int
+  database  String
+  status    String   @default("active")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("users")
+  @@map("connections")
 }
 
 // Add your models here
@@ -412,6 +416,18 @@ Perfect for:
 - 🔄 Process monitoring
 
 See [docs/HEALTH_CHECK.md](./docs/HEALTH_CHECK.md) for complete documentation and integration examples.
+
+## 🤖 MCP Integration
+
+The project includes Model Context Protocol (MCP) configuration for enhanced AI tooling capabilities:
+
+**Configuration** (`.mcp.json`):
+
+- **Playwright MCP Server**: Enables browser automation testing with AI assistants
+- **Use Cases**: E2E testing, automated UI interactions, browser-based feature testing
+- **Benefits**: AI assistants can interact directly with your application in a browser environment
+
+The MCP configuration allows AI development tools like Claude to perform browser automation tasks, making it easier to test and validate frontend functionality.
 
 ## 🔧 Customization
 

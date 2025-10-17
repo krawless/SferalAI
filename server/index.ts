@@ -2,11 +2,12 @@ import express, { type Request, type Response, type NextFunction } from 'express
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { z } from 'zod';
-import prisma from './lib/prisma.ts';
+import prisma from './lib/prisma';
 import crypto from 'crypto';
+import path from 'path';
 
 // Load environment variables
-dotenv.config({ path: '../.env' });
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 // Environment variable validation schema
 const envSchema = z.object({
@@ -134,13 +135,8 @@ const validate = (schema: {
 };
 
 // Validation schemas
-const createUserSchema = z.object({
-  email: z.string().email('Invalid email format'),
-  name: z.string().min(1, 'Name is required').max(100, 'Name too long'),
-});
-
-const userIdSchema = z.object({
-  id: z.string().regex(/^\d+$/, 'Invalid user ID format').transform(Number),
+const idParamSchema = z.object({
+  id: z.string().regex(/^\d+$/, 'Invalid ID format').transform(Number),
 });
 
 const paginationSchema = z.object({
@@ -320,7 +316,7 @@ app.get('/api/connections', validate({ query: paginationSchema }), async (req: R
 });
 
 // Example GET endpoint with param validation - get connection by ID
-app.get('/api/connections/:id', validate({ params: userIdSchema }), async (req: Request, res: Response) => {
+app.get('/api/connections/:id', validate({ params: idParamSchema }), async (req: Request, res: Response) => {
   try {
     const { id } = req.params as unknown as { id: number };
     
@@ -342,11 +338,11 @@ app.get('/api/connections/:id', validate({ params: userIdSchema }), async (req: 
     const err = error instanceof Error ? error : new Error(String(error));
     const errorId = logError(err, { 
       req,
-      additionalContext: { operation: 'fetch_user_by_id', userId: req.params.id }
+      additionalContext: { operation: 'fetch_connection_by_id', connectionId: req.params.id }
     });
     
     res.status(500).json({
-      error: 'Failed to fetch user',
+      error: 'Failed to fetch connection',
       errorId,
       ...(NODE_ENV === 'development' && { message: err.message }),
     });

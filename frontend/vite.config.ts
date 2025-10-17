@@ -81,5 +81,9 @@ export default defineConfig(({ mode }) => {
       host: true, // Listen on all addresses including IPv4
       port: validatedEnv.VITE_PORT,
     },
+    define: {
+      // Explicitly expose VITE_ prefixed environment variables to the client
+      'import.meta.env.VITE_API_URL': JSON.stringify(validatedEnv.VITE_API_URL),
+    },
   };
 });
