@@ -72,8 +72,8 @@ This document summarizes what has been implemented in this reusable project temp
 - [x] Prisma CLI and client installed
 - [x] MySQL provider configured
 - [x] UTF-8 support (charset handled in connection URL)
-- [x] Example User model created
-- [x] Prisma client singleton pattern in `server/lib/prisma.ts`
+- [x] Example Connection model created
+- [x] Prisma client singleton pattern in `server/lib/prisma`
 - [x] Environment-based logging configuration
 - [x] Generate script configured
 - [x] Migration scripts configured
@@ -98,6 +98,14 @@ This document summarizes what has been implemented in this reusable project temp
 - [x] ESLint auto-fix on save
 - [x] Concurrent dev scripts for frontend and backend
 - [x] Watch mode for server development
+
+### MCP Integration ✓
+
+- [x] Model Context Protocol (MCP) configuration file created
+- [x] Playwright MCP server configured
+- [x] Browser automation support for AI assistants
+- [x] E2E testing capabilities with AI tooling
+- [x] Configuration documented in `.mcp.json`
 
 ### Documentation ✓
 
@@ -130,8 +138,9 @@ This document summarizes what has been implemented in this reusable project temp
 
 ### Frontend
 
-- React 19.2.0
-- Vite 7.1.9
+- React 19.1.1
+- React Router 7.9.4
+- Vite 7.1.7
 - TypeScript 5.9.3
 - Tailwind CSS 3.4.17
 - @phosphor-icons/react 2.1.10

@@ -11,6 +11,7 @@ This is a modern, production-ready full-stack template with a React frontend and
 **Frontend:**
 
 - React 19 - UI library
+- React Router 7 - Client-side routing
 - Vite 7 - Build tool and dev server
 - TypeScript - Type safety
 - Tailwind CSS 3 - Utility-first CSS framework
@@ -156,7 +157,7 @@ VITE_API_URL=http://localhost:${PORT}
 ### Backend Core Files
 
 - `server/index.ts` - Express server with routes, validation, error handling
-- `server/lib/prisma.ts` - Prisma client singleton instance
+- `server/lib/prisma` - Prisma client singleton instance
 
 ### Database Files
 
@@ -336,27 +337,32 @@ Type-safe database client with auto-completion.
 **Basic Usage:**
 
 ```typescript
-import prisma from './lib/prisma.ts';
+import prisma from './lib/prisma';
 
 // Find one
-const user = await prisma.user.findUnique({ where: { id: 1 } });
+const connection = await prisma.connection.findUnique({ where: { id: 1 } });
 
 // Find many
-const users = await prisma.user.findMany({ where: { status: 'active' } });
+const connections = await prisma.connection.findMany({ where: { status: 'active' } });
 
 // Create
-const newUser = await prisma.user.create({
-  data: { email: 'user@example.com', name: 'John' }
+const newConnection = await prisma.connection.create({
+  data: { 
+    name: 'Production DB',
+    host: 'localhost',
+    port: 3306,
+    database: 'myapp'
+  }
 });
 
 // Update
-const updated = await prisma.user.update({
+const updated = await prisma.connection.update({
   where: { id: 1 },
-  data: { name: 'Jane' }
+  data: { name: 'Updated Name' }
 });
 
 // Delete
-await prisma.user.delete({ where: { id: 1 } });
+await prisma.connection.delete({ where: { id: 1 } });
 ```
 
 ## Server Management
@@ -593,27 +599,27 @@ Theme preference is automatically saved to localStorage.
 Edit `prisma/schema.prisma`:
 
 ```prisma
-model User {
+model Connection {
   id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  posts     Post[]
+  name      String
+  host      String
+  port      Int
+  database  String
+  status    String   @default("active")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("users")
+  @@map("connections")
 }
 
-model Post {
+model YourModel {
   id        Int      @id @default(autoincrement())
   title     String
   content   String   @db.Text
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("posts")
+  @@map("your_models")
 }
 ```
 
@@ -681,7 +687,7 @@ Runs at `http://localhost:5555` by default (Prisma Studio's default port).
 
 ### Database Access
 
-1. Prisma client is a singleton imported from `server/lib/prisma.ts`
+1. Prisma client is a singleton imported from `server/lib/prisma`
 2. Always use try-catch blocks for database operations
 3. The Connection model stores database connection metadata
 4. Schema changes require `prisma:generate` to update the client
@@ -700,6 +706,57 @@ Runs at `http://localhost:5555` by default (Prisma Studio's default port).
 3. **Decimals**: Use Decimal.js utilities from `lib/utils.ts`
 4. **Theming**: Use CSS variables with theme context
 5. **Icons**: Use Phosphor Icons with consistent sizing
+
+## MCP Integration
+
+The project includes Model Context Protocol (MCP) configuration for enhanced AI tooling capabilities.
+
+### What is MCP?
+
+MCP (Model Context Protocol) enables AI assistants to interact with external tools and services. This template includes a Playwright MCP server configuration.
+
+### Configuration
+
+**Location:** `.mcp.json` at project root
+
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"],
+      "env": {}
+    }
+  }
+}
+```
+
+### Use Cases
+
+The Playwright MCP server enables AI assistants to:
+
+- **Browser Automation**: Automate browser interactions for testing
+- **E2E Testing**: Test frontend functionality with AI assistance
+- **UI Validation**: Verify user interface behavior
+- **Screenshot Testing**: Capture and compare visual states
+- **Form Testing**: Test form submissions and validation
+
+### Benefits
+
+- ✅ AI assistants can interact directly with your application in a browser
+- ✅ Automated testing without manual test writing
+- ✅ Quick validation of frontend features
+- ✅ Enhanced development workflow with AI tooling
+
+### Usage
+
+AI development tools like Claude can use the MCP configuration to perform browser automation tasks. This is particularly useful when:
+
+- Testing new features in the browser
+- Validating UI changes
+- Debugging frontend issues
+- Creating automated test scenarios
 
 ## Troubleshooting Quick Fixes
 

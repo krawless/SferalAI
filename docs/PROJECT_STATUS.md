@@ -16,6 +16,7 @@ All components have been successfully implemented and tested. The template is pr
 
 ### Feature Verification
 
+- ✅ React Router 7 configured and working
 - ✅ Tailwind CSS 3.4.17 configured and working
 - ✅ shadcn/ui components styled correctly
 - ✅ Dark/Light theme system functional
@@ -25,6 +26,7 @@ All components have been successfully implemented and tested. The template is pr
 - ✅ Backend server configured with Express 5
 - ✅ Prisma ORM connected to MySQL
 - ✅ All path aliases working (@/ imports)
+- ✅ MCP Integration with Playwright configured
 
 ### Code Quality
 
@@ -109,7 +111,7 @@ bun run dev
 ### Backend Core
 
 - `server/index.ts` - Express server with example routes
-- `server/lib/prisma.ts` - Prisma client singleton
+- `server/lib/prisma` - Prisma client singleton
 
 ## 🎯 What's Included
 
@@ -213,10 +215,11 @@ Create in `frontend/src/components/` and use:
 
 ## ✨ Template Highlights
 
-- **Modern Stack**: React 19, Vite 7, Tailwind CSS 3, Bun runtime
+- **Modern Stack**: React 19, React Router 7, Vite 7, Tailwind CSS 3, Bun runtime
 - **Type Safe**: Full TypeScript support with strict mode
 - **Beautiful UI**: shadcn/ui components with dark/light themes
 - **Precise Math**: Decimal.js integration for financial calculations
+- **AI Tooling**: MCP integration with Playwright for browser automation
 - **Developer Experience**: Hot reload, ESLint, Prettier, VSCode integration
 - **Production Ready**: Build passes, all tests clear, code formatted
 
