@@ -7,7 +7,7 @@ import crypto from 'crypto';
 import path from 'path';
 
 // Load environment variables
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 // Environment variable validation schema
 const envSchema = z.object({
