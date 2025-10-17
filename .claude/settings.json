@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(chown:*)",
+      "Bash(chmod:*)",
+      "Bash(cd ..:*)",
+      "Bash(cd /:*)",
+      "Bash(cd ~:*)"
+    ],
+    "allow": [
+      "Bash(curl:*)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "playwright"
+  ],
+  "enableAllProjectMcpServers": true
+}
