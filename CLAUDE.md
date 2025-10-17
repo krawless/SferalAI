@@ -9,7 +9,7 @@ This is a full-stack monorepo template built with React + Vite frontend, Bun + E
 ## Essential Commands
 
 Always read .env before doing any changes. Use only the vars from the .env
-You aren't allowed to kill any processes that aren't started by the .env files or by you in the current session.
+When using icons, check if our current icon library have them, and use an appropiate icon, because we often have the issue where you are using icons that doesn't exists.
 
 ### Development
 
